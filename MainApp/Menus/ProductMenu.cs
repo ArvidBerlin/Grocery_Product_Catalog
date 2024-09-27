@@ -1,13 +1,25 @@
-﻿using Resources.Models;
+﻿using Resources.Interfaces;
+using Resources.Models;
 using Resources.Services;
 
 namespace MainApp.Menus;
 
-public class ProductMenu
+internal class ProductMenu
 {
-    private static readonly ProductService _productService = new();
+    private static readonly string _filePath = @"c:\\programmering_med_c#\\projects\\console_files\\products.json";
+    private static readonly IProductService<Product, Product> _productService = new ProductService(_filePath);
 
-    internal static void CreateProductMenu()
+    /*
+    private static readonly IProductService<Product, Product> _productService;
+
+    public ProductMenu(IProductService<Product, Product> productService)
+    {
+        _productService = productService;
+    }
+    */
+    
+
+    public static void CreateProductMenu()
     {
         var product = new Product();
 
@@ -25,10 +37,12 @@ public class ProductMenu
         Console.WriteLine(response.Message);
     }
 
-    internal static void GetAllProductsFromListMenu()
+    public static void GetAllProductsFromListMenu()
     {
-        Console.Clear();
         var products = _productService.GetAllProductsFromList();
+
+        Console.Clear();
+        Console.WriteLine("\n\t The inventory: ");
 
         if (!products.Succeeded)
         {
@@ -37,16 +51,16 @@ public class ProductMenu
         }
         else
         {
-            foreach (var product in products.Content as IEnumerable<Product>)
+            foreach (var product in (IEnumerable<Product>)products.Result!)
             {
-                Console.WriteLine($"\t Product ID: {product.Id}" +
+                Console.WriteLine($"\n\t Product ID: {product.Id}" +
                 $"\n\t Product: {product.Name}" +
                 $"\n\t Price: {product.Price}");
             }
         }
     }
 
-    internal static void DeleteProductMenu()
+    public static void DeleteProductMenu()
     {
         var product = new Product();
 

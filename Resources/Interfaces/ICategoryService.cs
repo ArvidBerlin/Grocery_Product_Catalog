@@ -1,5 +1,8 @@
-﻿namespace Resources.Interfaces;
+﻿using Resources.Models;
 
-internal class ICategoryService
+namespace Resources.Interfaces;
+
+public interface ICategoryService
 {
+
 }

@@ -1,5 +1,10 @@
-﻿namespace Resources.Interfaces;
+﻿using Resources.Models;
 
-internal class IProductService
+namespace Resources.Interfaces;
+
+public interface IProductService<T, TResult> where T : class where TResult : class
 {
+    ServiceResponse<TResult> CreateProduct(T product);
+    ServiceResponse<IEnumerable<TResult>> GetAllProductsFromList();
+    ServiceResponse<TResult> DeleteProduct(T product);
 }

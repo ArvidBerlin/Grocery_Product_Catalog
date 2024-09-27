@@ -1,5 +1,9 @@
-﻿namespace Resources.Interfaces;
+﻿using Resources.Models;
 
-internal class IFileService
+namespace Resources.Interfaces;
+
+public interface IFileService
 {
+    public ServiceResponse<string> SaveToFile(string content);
+    public ServiceResponse<string> LoadFromFile();
 }
