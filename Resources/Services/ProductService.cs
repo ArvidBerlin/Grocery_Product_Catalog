@@ -81,7 +81,6 @@ public class ProductService : IProductService<Product, Product>
             {
                 return new ServiceResponse<IEnumerable<Product>> { Succeeded = false, Message = "No file was found." };
             }
-           
         }
         catch (Exception ex)
         {
@@ -131,6 +130,63 @@ public class ProductService : IProductService<Product, Product>
             Debug.WriteLine(ex);
             return new ServiceResponse<Product> { Succeeded = false, Message = ex.Message };
         }
+    }
+
+    public ServiceResponse<Product> UpdateProduct(string productName, Product updatedProduct)
+    {
+        try
+        {
+            var content = _fileService.LoadFromFile();
+
+            if (content.Succeeded)
+            {
+                _products = JsonConvert.DeserializeObject<List<Product>>(content.Result!)!;
+
+                if (string.IsNullOrEmpty(productName))
+                {
+                    return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t You did not enter a product to update." };
+                }
+
+                if (string.IsNullOrEmpty(updatedProduct.Name))
+                {
+                    return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t No name was given to product." };
+                }
+
+                if (updatedProduct.Price <= 0)
+                {
+                    return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t Product price can't be 0, please set a price." };
+                }
+
+                if (_products.Any(x => x.Name == updatedProduct.Name))
+                {
+                    return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t Product with same name already exists in the inventory" };
+                }
+                var productToUpdate = _products.FirstOrDefault(x => x.Name == productName);
+                if (productToUpdate != null)
+                {
+                    productToUpdate.Name = updatedProduct.Name;
+                    productToUpdate.Price = updatedProduct.Price;
+                    var json = JsonConvert.SerializeObject(_products, Formatting.Indented);
+                    var result = _fileService.SaveToFile(json);
+                    if (result.Succeeded)
+                    {
+                        return new ServiceResponse<Product> { Succeeded = true, Message = "\n\t Product was updated successfully." };
+                    }
+                }
+            }
+            else
+            {
+                return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t No file was found. " };
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return new ServiceResponse<Product> { Succeeded = false, Message = ex.Message };
+        }
+
+
+        throw new NotImplementedException();
     }
 }
 

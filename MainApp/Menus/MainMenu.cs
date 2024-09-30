@@ -61,6 +61,8 @@ internal static class MainMenu
                     break;
 
                 case 4:
+                    ProductMenu.UpdateProductMenu();
+                    Console.ReadKey();
                     break;
 
                 case 0:

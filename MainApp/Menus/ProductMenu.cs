@@ -6,6 +6,7 @@ namespace MainApp.Menus;
 
 internal class ProductMenu
 {
+    
     private static readonly string _filePath = @"c:\\programmering_med_c#\\projects\\console_files\\products.json";
     private static readonly IProductService<Product, Product> _productService = new ProductService(_filePath);
 
@@ -35,6 +36,7 @@ internal class ProductMenu
 
         var response = _productService.CreateProduct(product);
         Console.WriteLine(response.Message);
+        Console.Write("\n\t Press any key to continue. ");
     }
 
     public static void GetAllProductsFromListMenu()
@@ -58,6 +60,7 @@ internal class ProductMenu
                 $"\n\t Price: {product.Price}");
             }
         }
+        Console.Write("\n\t Press any key to continue. ");
     }
 
     public static void DeleteProductMenu()
@@ -65,11 +68,38 @@ internal class ProductMenu
         var product = new Product();
 
         Console.Clear();
-        Console.WriteLine("\t Please type the product name you want to remove from the inventory.");
+        Console.WriteLine("\n\t Please type in the product name you want to remove from the inventory.");
         Console.Write("\n\t Product name: ");
         product.Name = Console.ReadLine() ?? "";
 
         var response = _productService.DeleteProduct(product);
         Console.WriteLine(response.Message);
+        Console.Write("\n\t Press any key to continue. ");
+    }
+
+    public static void UpdateProductMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("\n\t Please type in the product name you want to update.");
+        Console.Write("\n\t Product name: ");
+        string productName = Console.ReadLine() ?? "";
+
+        var product = new Product();
+
+        Console.Clear();
+        Console.WriteLine("\n\t Please type in the new name and price for the product.");
+
+        Console.Write("\n\t Product name: ");
+        product.Name = Console.ReadLine() ?? "";
+
+        Console.Write("\t Product price: ");
+        decimal.TryParse(Console.ReadLine(), out decimal price);
+        product.Price = price;
+
+        var updatedProduct = product;
+
+        var response = _productService.UpdateProduct(productName, updatedProduct);
+        Console.WriteLine(response.Message);
+        Console.Write("\n\t Press any key to continue. ");
     }
 }
