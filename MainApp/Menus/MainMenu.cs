@@ -24,6 +24,7 @@ internal static class MainMenu
             Console.Clear();
             Console.WriteLine("\n\t Invalid option! Please pick a menu option between 1-4, " +
                 "\n\t or exit the application with 0.");
+            Console.Write("\n\t Press any key to continue. ");
             Console.ReadKey();
         }
     }

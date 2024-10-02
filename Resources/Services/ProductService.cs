@@ -90,7 +90,7 @@ public class ProductService : IProductService<Product, Product>
 
     }
 
-    public ServiceResponse<Product> DeleteProduct(Product product)
+    public ServiceResponse<Product> DeleteProduct(string productId)
     {
         try
         {
@@ -98,12 +98,12 @@ public class ProductService : IProductService<Product, Product>
 
             if (content.Succeeded)
             {
-                if (string.IsNullOrEmpty(product.Name))
+                if (string.IsNullOrEmpty(productId))
                 {
                     return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t You did not enter a product to remove." };
                 }
 
-                var productToRemove = _products.FirstOrDefault(x => x.Name == product.Name);
+                var productToRemove = _products.FirstOrDefault(x => x.Id == productId);
 
                 if (productToRemove == null)
                 {
@@ -132,7 +132,7 @@ public class ProductService : IProductService<Product, Product>
         }
     }
 
-    public ServiceResponse<Product> UpdateProduct(string productName, Product updatedProduct)
+    public ServiceResponse<Product> UpdateProduct(string productId, Product updatedProduct)
     {
         try
         {
@@ -142,7 +142,7 @@ public class ProductService : IProductService<Product, Product>
             {
                 _products = JsonConvert.DeserializeObject<List<Product>>(content.Result!)!;
 
-                if (string.IsNullOrEmpty(productName))
+                if (string.IsNullOrEmpty(productId))
                 {
                     return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t You did not enter a product to update." };
                 }
@@ -161,7 +161,7 @@ public class ProductService : IProductService<Product, Product>
                 {
                     return new ServiceResponse<Product> { Succeeded = false, Message = "\n\t Product with same name already exists in the inventory" };
                 }
-                var productToUpdate = _products.FirstOrDefault(x => x.Name == productName);
+                var productToUpdate = _products.FirstOrDefault(x => x.Id == productId);
                 if (productToUpdate != null)
                 {
                     productToUpdate.Name = updatedProduct.Name;

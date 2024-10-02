@@ -6,6 +6,6 @@ public interface IProductService<T, TResult> where T : class where TResult : cla
 {
     ServiceResponse<TResult> CreateProduct(T product);
     ServiceResponse<IEnumerable<TResult>> GetAllProductsFromList();
-    ServiceResponse<TResult> DeleteProduct(T product);
+    ServiceResponse<TResult> DeleteProduct(string productId);
     ServiceResponse<TResult> UpdateProduct(string productName, T updatedProduct);
 }

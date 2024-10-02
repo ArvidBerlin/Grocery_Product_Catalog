@@ -32,6 +32,7 @@ internal class ProductMenu
 
         Console.Write("\t Product price: ");
         decimal.TryParse(Console.ReadLine(), out decimal price);
+        price = Math.Round(price, 2);
         product.Price = price;
 
         var response = _productService.CreateProduct(product);
@@ -57,7 +58,7 @@ internal class ProductMenu
             {
                 Console.WriteLine($"\n\t Product ID: {product.Id}" +
                 $"\n\t Product: {product.Name}" +
-                $"\n\t Price: {product.Price}");
+                $"\n\t Price: {product.Price} kr");
             }
         }
         Console.Write("\n\t Press any key to continue. ");
@@ -65,41 +66,78 @@ internal class ProductMenu
 
     public static void DeleteProductMenu()
     {
-        var product = new Product();
+        var products = _productService.GetAllProductsFromList();
 
         Console.Clear();
-        Console.WriteLine("\n\t Please type in the product name you want to remove from the inventory.");
-        Console.Write("\n\t Product name: ");
-        product.Name = Console.ReadLine() ?? "";
+        Console.WriteLine("\n\t The inventory: ");
 
-        var response = _productService.DeleteProduct(product);
-        Console.WriteLine(response.Message);
-        Console.Write("\n\t Press any key to continue. ");
+        if (!products.Succeeded)
+        {
+            var getAllResponse = _productService.GetAllProductsFromList();
+            Console.WriteLine(getAllResponse.Message);
+        }
+        else
+        {
+            foreach (var printProduct in (IEnumerable<Product>)products.Result!)
+            {
+                Console.WriteLine($"\n\t Product ID: {printProduct.Id}" +
+                $"\n\t Product: {printProduct.Name}" +
+                $"\n\t Price: {printProduct.Price} kr");
+            }
+           
+            Console.WriteLine("\n\t Please type or copy the product ID you want to remove from the inventory.");
+            Console.Write("\n\t Product ID: ");
+            var productId = Console.ReadLine() ?? "";
+
+            var response = _productService.DeleteProduct(productId);
+            Console.Clear();
+            Console.WriteLine(response.Message);
+            Console.Write("\n\t Press any key to continue. ");
+        }
     }
 
     public static void UpdateProductMenu()
     {
-        Console.Clear();
-        Console.WriteLine("\n\t Please type in the product name you want to update.");
-        Console.Write("\n\t Product name: ");
-        string productName = Console.ReadLine() ?? "";
-
-        var product = new Product();
+        var products = _productService.GetAllProductsFromList();
 
         Console.Clear();
-        Console.WriteLine("\n\t Please type in the new name and price for the product.");
+        Console.WriteLine("\n\t The inventory: ");
 
-        Console.Write("\n\t Product name: ");
-        product.Name = Console.ReadLine() ?? "";
+        if (!products.Succeeded)
+        {
+            var getAllResponse = _productService.GetAllProductsFromList();
+            Console.WriteLine(getAllResponse.Message);
+        }
+        else
+        {
+            foreach (var printProduct in (IEnumerable<Product>)products.Result!)
+            {
+                Console.WriteLine($"\n\t Product ID: {printProduct.Id}" +
+                $"\n\t Product: {printProduct.Name}" +
+                $"\n\t Price: {printProduct.Price} kr");
+            }
 
-        Console.Write("\t Product price: ");
-        decimal.TryParse(Console.ReadLine(), out decimal price);
-        product.Price = price;
+            Console.WriteLine("\n\t Please type or copy the product ID you want to update.");
+            Console.Write("\n\t Product ID: ");
+            string productId = Console.ReadLine() ?? "";
 
-        var updatedProduct = product;
+            var product = new Product();
 
-        var response = _productService.UpdateProduct(productName, updatedProduct);
-        Console.WriteLine(response.Message);
-        Console.Write("\n\t Press any key to continue. ");
+            Console.Clear();
+            Console.WriteLine("\n\t Please type in the new name and price for the product.");
+
+            Console.Write("\n\t Product name: ");
+            product.Name = Console.ReadLine() ?? "";
+
+            Console.Write("\t Product price: ");
+            decimal.TryParse(Console.ReadLine(), out decimal price);
+            product.Price = price;
+
+            var updatedProduct = product;
+
+            var response = _productService.UpdateProduct(productId, updatedProduct);
+            Console.WriteLine(response.Message);
+            Console.Write("\n\t Press any key to continue. ");
+        }
     }
 }
